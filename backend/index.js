@@ -1,7 +1,9 @@
-import express from "express";
+import express, { text } from "express";
 import dotenv from "dotenv";
 import connectMongoDB from "./db/connectMongoDB.js";
-import authRoutes from "./routes/auth.routes.js"
+import authRoutes from "./routes/auth.routes.js";
+import testRoutes from "./routes/test.routes.js";
+import textRoutes from "./routes/text.routes.js";
 import cookieParser from "cookie-parser";
 dotenv.config();
 
@@ -18,6 +20,9 @@ const PORT = process.env.PORT || 5000;
 
 // route calls
 app.use("/api/auth", authRoutes);
+app.use("/api/test", testRoutes);
+app.use("/api/text",textRoutes);
+
 
 // Starts server on port and callback
 app.listen(PORT, ()=>{

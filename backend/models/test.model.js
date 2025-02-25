@@ -16,12 +16,16 @@ const testSchema = new mongoose.Schema({
         type: Number,
         required: false,
     },
+    adjWPM:{
+        type: Number, 
+        required: false,
+    },
     accuracy: {
         type: Number,
         required: false,
     },
     totalTime: {
-        type: Time,
+        type: Number,
         required: false,
 
     },

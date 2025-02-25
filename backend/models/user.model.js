@@ -15,10 +15,10 @@ const userSchema = new mongoose.Schema({
         required: true, 
         unique: true,
     },
-    testTaken:{
-        type: Number,
-        default: 0,
-    },
+    tests: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Test"
+    }],
     topWPM:{
         type: Number,
         default: 0,

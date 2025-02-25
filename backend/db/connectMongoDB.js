@@ -1,11 +1,12 @@
 import mongoose from "mongoose"
-
+import User from "../models/user.model.js"
 // Connecting MongoDB async function 
 const connectMongoDB = async () => {
     try{
         const link = process.env.Mongo_URl;
         const connect = await mongoose.connect(link);
         console.log(`Mongo DB has been connected: ${connect.connection.host}`);
+
     }
     catch(error){
         console.log("Error connecting to MongoDB", error);
