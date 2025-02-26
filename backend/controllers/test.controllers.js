@@ -49,8 +49,7 @@ export const submitTest = async(req,res) => {
             await newTest.save();
             await user.updateOne({
                $push:{tests: newTest} 
-            })
-            const numTests = user.tests.length
+	    })
 
         
             if(user.topWPM < actualWPM){
@@ -59,14 +58,21 @@ export const submitTest = async(req,res) => {
                 }, {$set: {topWPM: actualWPM}}) }
                     
               // Aggregate the sum of all the adjWPMs in the tests
-            const totalAdj = await User.aggregate([
-                {$match: {_id: user._id}},
-                {$group:{ 
-                    _id: null, //exclude id field
-                   totalAdjWPM: {$sum: "$tests.adjWPM"} // Add adjWPM to a total count of totalAdjWPM 
-                }}]
-            )
-            const newAvg = totalAdj/numTests
+		const totalAdj = await Test.aggregate([
+			{$match: {user: user._id}},
+			{$group:{ 
+				_id: null,
+				totalAdjWPM: {$sum: "$adjWPM"} 
+			}}
+		]);
+		let numTests = user.tests.length;
+		// Calculate the new average
+		let newAvg = 0;
+		if (totalAdj.length > 0 && totalAdj[0].totalAdjWPM !== null) {
+			newAvg = numTests === 0 ? 0 : totalAdj[0].totalAdjWPM / numTests;
+		}
+		console.log(newAvg);
+
             await User.updateOne({
                 _id: user._id
             }, {$set: {avgWPM: newAvg}}
