@@ -8,7 +8,7 @@ const router = express.Router();
 
 //Tested using postman
 router.post("/signup" ,signup);
-router.get("/login",login );
+router.post("/login",login );
 router.get("/logout", logout);
 router.get("/user", protectRoute ,getUser);
 export default router;
