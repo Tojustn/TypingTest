@@ -1,1 +1,8 @@
 @import "tailwindcss";
+@theme {
+  --color-spacebg: #070F2B;
+  --color-spacelight: #9290C3;
+  --color-star: #ffcd3c;
+  --color-light2: #535C91
+}
+
