@@ -1,10 +1,10 @@
 import api from "../api.js";
 
 // Fetch user status
- const checkAuth = async () => {
+const checkAuth = async () => {
     try {
         const response = await api.get('/api/auth/user', {
-            withCredentials: true
+            withCredentials: true, credentials: 'include'
         });
 
         if (response.status === 200) {
