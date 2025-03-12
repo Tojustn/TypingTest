@@ -99,20 +99,12 @@ export const logout = async (req, res) => {
     }
 }
 
-export const getUser = async (req, res) => {
-    try {
-        const user = await User.findById(req.user._id).select("-password")
-        const numTest = user.test.length;
-        res.status(200).json({
-            username: user.username,
-            avgWPM: user.avgWPM,
-            topWPM: user.topWPM,
-            numTest: numTest,
 
-        })
-    }
-    catch (error) {
-        console.log(error)
-        res.status(500).json({ error: "Couldn't fetch user info" })
-    }
-}
+export const getUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password");
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ success: "fail", error: "Internal Server Error" });
+  }
+};

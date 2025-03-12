@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // to parse form data in url encoded format
 // Parse cookies
 app.use(cookieParser());
-app.use(cors({origin: ['http://localhost:5000'], credentials: true})); // For cross origin API stuff
+app.use(cors({origin: ['http://localhost:8000'], credentials: true})); // For cross origin API stuff
 
 
 const PORT = process.env.PORT || 5000;
