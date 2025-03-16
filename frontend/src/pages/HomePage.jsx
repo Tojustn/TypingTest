@@ -16,10 +16,22 @@ const HomePage = () => {
     // Acts as a 2d array, columns are words, rows are letters
     const [status, setStatus] = useState([])
     const createShallowCopy = (state) => {
+        const prevWordIndex = wordIndex - 1;
+        let newWordIndex = wordIndex
+        let newLetterIndex = letterIndex
+        console.log(`Letter Index ${letterIndex}`)
+        console.log(`Word Index ${wordIndex}`)
+        if (state === "upcoming") {
+            if (letterIndex === 0 && wordIndex > 0) {
+                newLetterIndex = text[prevWordIndex].length - 1
+                newWordIndex = prevWordIndex
+            }
+            else newLetterIndex -= 1
+        }
         setStatus(status.map((words, wordsIndex) => {
-            if (wordsIndex === wordIndex) {
+            if (wordsIndex === newWordIndex) {
                 return words.map((thisLetter, thisLetterIndex) => {
-                    if (thisLetterIndex === letterIndex) {
+                    if (thisLetterIndex === newLetterIndex) {
                         // return shallow copy
                         return state;
                     }
@@ -36,10 +48,11 @@ const HomePage = () => {
         console.log(isVisible)
         console.log(text)
 
-        if (!text && text.length === 0) { 
+        if (!text && text.length === 0) {
             console.log("no text")
 
-            return }
+            return
+        }
 
 
         if (!text[wordIndex] || !text[wordIndex][letterIndex]) {
@@ -55,24 +68,36 @@ const HomePage = () => {
             return
         }
         else if (keyName === "Backspace") {
-            if (status[wordIndex][letterIndex] != "correct") {
+            if (letterIndex != 0) {
                 setLetterIndex(letterIndex => letterIndex - 1)
+                createShallowCopy("upcoming")
+                console.log(letterIndex)
             }
+            else if (letterIndex === 0 && wordIndex > 0) {
+
+                const prevWordIndex = wordIndex - 1;
+                setWordIndex(prevWordIndex);
+                setLetterIndex(text[prevWordIndex].length - 1);
+                createShallowCopy("upcoming");
+
+            }
+            return
 
         }
         else if (keyName !== "Shift" && keyName !== "Control" && keyName !== "Alt" && !keyName.includes("Arrow")) {
             setUserInput(prevInput => prevInput + keyName);
         }
-
         // Create shallow copy
-        if (keyName === text[wordIndex][letterIndex]) {
-            createShallowCopy("correct")
-        }
-        else if (keyName != text[wordIndex][letterIndex]) {
+        if (keyName != " ") {
+            if (keyName === text[wordIndex][letterIndex]) {
+                createShallowCopy("correct")
+            }
+            else if (keyName != text[wordIndex][letterIndex]) {
 
-            createShallowCopy("wrong")
+                createShallowCopy("wrong")
+            }
         }
-        console.log(`Word length ${text[wordIndex].length-1}`)
+        console.log(`Word length ${text[wordIndex].length - 1}`)
         if (letterIndex >= text[wordIndex].length - 1 && keyName === " ") {
 
             console.log("Next word")
@@ -80,12 +105,9 @@ const HomePage = () => {
             setWordIndex(wordIndex => wordIndex + 1)
             setLetterIndex(0)
         }
-        else if(keyName != " " && letterIndex >= text[wordIndex].length - 1){
-            return
-        }
-        else{
+        else {
 
-            
+
             setLetterIndex(letterIndex => letterIndex + 1)
         }
 
@@ -140,24 +162,25 @@ const HomePage = () => {
 
         }
     }, [curMode])
-    useEffect(() => {
 
-
-        console.log(status)
-
-
-    }, [status])
     return (
         <div className="h-full w-full flex flex-col justify-center">
             <NavBar route={isUser ? "/user" : "/login"} />
             <section className="flex-1 flex flex-col items-center justify-center">
                 <main className=" w-full px-20 md:px-100">
-                    {isVisible ? <div className="blur-md flex flex-wrap flex-row justify-center">
-                        {text.map(word => <div className="mx-1">{word}</div>)}
-                    </div> :
+                    {isVisible ?
+
+                        <div className="blur-md flex flex-wrap flex-row justify-center 2">
+                            {/*Passing Both word and wordIndex into Word component*/}
+                            {text.map((word, WordIndex) => <div className=" mx-2"><Word className="" status={status[WordIndex]} word={word}></Word></div>)}
+
+                        </div>
+
+                        :
                         <div className="flex flex-wrap flex-row justify-center 2">
                             {/*Passing Both word and wordIndex into Word component*/}
-                            {text.map((word, WordIndex) => <div className =" mx-2"><Word className = "" status={status[WordIndex]} word={word}></Word></div>)}
+                            {text.map((word, WordIndex) => <div className=" mx-2"><Word className="" status={status[WordIndex]} word={word}></Word></div>)}
+
                         </div>
                     }
                     <div> {userInput} </div>

@@ -1,0 +1,3 @@
+const SubmitResults = () => {}
+
+export default SubmitResults;
