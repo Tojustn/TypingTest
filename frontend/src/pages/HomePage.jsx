@@ -1,10 +1,15 @@
-import { useState, useEffect, React } from "react"
+import Stopwatch from "../components/Stopwatch.jsx"
+import { useState, useEffect, useRef,React } from "react"
+import { useNavigate } from "react-router-dom"
 import NavBar from "../components/NavBar.jsx"
 import CheckAuth from "../utils/CheckIfLoggedIn.js"
 import checkCookies from "../utils/checkCookies.js"
 import randomWords from "../utils/random-words.js"
 import Word from "../components/Word.jsx"
 const HomePage = () => {
+    const [isTimer, setIsTimer] = useState(false)
+    const stopwatchRef = useRef(null)
+    const navigate = useNavigate();
     const [isVisible, setIsVisible] = useState(true);
     const [userInput, setUserInput] = useState("");
     const [isUser, setIsUser] = useState(false);
@@ -41,7 +46,14 @@ const HomePage = () => {
             return words
         }))
 
-
+        if (state === "correct" && letterIndex === text[wordIndex].length - 1 && wordIndex === text.length - 1) {
+            if (user) {
+                nav("/results", { state: { status: status, text: text } })
+            }
+            else {
+                nav("/results", { state: { status: status, text: text } })
+            }
+        }
 
     }
     const handleKeyPress = (event) => {
@@ -65,6 +77,7 @@ const HomePage = () => {
         if (keyName === " " && isVisible === true) {
             console.log("isVisible False")
             setIsVisible(false);
+            stopwatchRef.current.StartAndStop()
             return
         }
         else if (keyName === "Backspace") {
@@ -91,6 +104,7 @@ const HomePage = () => {
         if (keyName != " ") {
             if (keyName === text[wordIndex][letterIndex]) {
                 createShallowCopy("correct")
+
             }
             else if (keyName != text[wordIndex][letterIndex]) {
 
@@ -153,7 +167,6 @@ const HomePage = () => {
 
         CheckUser();
 
-
     }, [])
     useEffect(() => {
         if (curMode.isInteger) {
@@ -168,6 +181,8 @@ const HomePage = () => {
             <NavBar route={isUser ? "/user" : "/login"} />
             <section className="flex-1 flex flex-col items-center justify-center">
                 <main className=" w-full px-20 md:px-100">
+        
+                            <Stopwatch ref = {stopwatchRef}/>
                     {isVisible ?
 
                         <div className="blur-md flex flex-wrap flex-row justify-center 2">
@@ -177,8 +192,9 @@ const HomePage = () => {
                         </div>
 
                         :
+
                         <div className="flex flex-wrap flex-row justify-center 2">
-                            {/*Passing Both word and wordIndex into Word component*/}
+                            
                             {text.map((word, WordIndex) => <div className=" mx-2"><Word className="" status={status[WordIndex]} word={word}></Word></div>)}
 
                         </div>

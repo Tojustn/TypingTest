@@ -13,7 +13,7 @@ const UserPage = () => {
     useEffect(() => {
         const getUser = async () => {
 
-            const userData = await FetchUser();
+            const userData = FetchUser();
             setUser(userData)
             setIsLoading(false)
         }
