@@ -1,5 +1,5 @@
 import { useImperativeHandle, useState, useEffect } from "react"
-const Stopwatch = ( {ref}) => {
+const Stopwatch = (props) => {
     const [isActive, setIsActive] = useState(false);
     const [time, setTime] = useState(0);
     useEffect(() => {
@@ -27,7 +27,7 @@ const Stopwatch = ( {ref}) => {
     const getTime = () => {
         return time
     }
-    useImperativeHandle(ref, () => {
+    useImperativeHandle(props.ref, () => {
         return {
             StartAndStop,
             reset,
@@ -36,7 +36,7 @@ const Stopwatch = ( {ref}) => {
         }
 
     }, [])
-    return <div> {seconds} </div>
+    return <div className={props.canSee ? "" : "hidden"}>{seconds}</div>
 }
 
 

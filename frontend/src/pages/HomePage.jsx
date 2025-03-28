@@ -1,5 +1,10 @@
+import api from "../api.js"
+import { useMode } from "../utils/Contexts.jsx"
+import ModeButtons from "../components/ModeButtons.jsx"
+import isStopwatch from "../utils/isStopwatch.js"
 import Stopwatch from "../components/Stopwatch.jsx"
-import { useState, useEffect, useRef,React } from "react"
+import Timer from "../components/Timer.jsx"
+import { useState, useEffect, useRef, React } from "react"
 import { useNavigate } from "react-router-dom"
 import NavBar from "../components/NavBar.jsx"
 import CheckAuth from "../utils/CheckIfLoggedIn.js"
@@ -7,19 +12,23 @@ import checkCookies from "../utils/checkCookies.js"
 import randomWords from "../utils/random-words.js"
 import Word from "../components/Word.jsx"
 const HomePage = () => {
-    const [isTimer, setIsTimer] = useState(false)
+    const modeContext = useMode();
+    const mode = modeContext.mode
     const stopwatchRef = useRef(null)
+    const timerRef = useRef(null)
+    const [isTimer, setIsTimer] = useState(false)
     const navigate = useNavigate();
     const [isVisible, setIsVisible] = useState(true);
     const [userInput, setUserInput] = useState("");
     const [isUser, setIsUser] = useState(false);
-    const [curMode, setCurMode] = useState(10)
     const [text, setText] = useState([]);
     const [wordIndex, setWordIndex] = useState(0);
     const [letterIndex, setLetterIndex] = useState(0);
 
     // Acts as a 2d array, columns are words, rows are letters
     const [status, setStatus] = useState([])
+
+    // Finds the current letter and changes the state
     const createShallowCopy = (state) => {
         const prevWordIndex = wordIndex - 1;
         let newWordIndex = wordIndex
@@ -56,6 +65,8 @@ const HomePage = () => {
         }
 
     }
+
+
     const handleKeyPress = (event) => {
         console.log(isVisible)
         console.log(text)
@@ -73,14 +84,22 @@ const HomePage = () => {
             console.log(wordIndex)
         };
         const keyName = event.key;
-
         if (keyName === " " && isVisible === true) {
-            console.log("isVisible False")
             setIsVisible(false);
-            stopwatchRef.current.StartAndStop()
+            if (stopwatchRef.current) {
+                setTimeout(() => {
+                    stopwatchRef.current.StartAndStop()
+                }, 0)
+            }
+            else {
+
+                setTimeout(() => {
+                    timerRef.current.StartAndStop()
+                }, 0)
+
+            }
             return
-        }
-        else if (keyName === "Backspace") {
+        } else if (keyName === "Backspace") {
             if (letterIndex != 0) {
                 setLetterIndex(letterIndex => letterIndex - 1)
                 createShallowCopy("upcoming")
@@ -155,7 +174,7 @@ const HomePage = () => {
         }
         setStatus(grid)
 
-    }, [text])
+    }, [text,mode])
     useEffect(() => {
         setText(randomWords(10))
         const CheckUser = async () => {
@@ -169,33 +188,56 @@ const HomePage = () => {
 
     }, [])
     useEffect(() => {
-        if (curMode.isInteger) {
-            // Should've used TS 
-            setText(randomWords(curMode))
-
+        setLetterIndex(0)
+        setWordIndex(0)
+        setUserInput("")
+        if (stopwatchRef.current) {
+            stopwatchRef.current.reset()
         }
-    }, [curMode])
-
+        console.log(mode)
+        console.log(mode.wordCount)
+        if (mode.wordCount) {
+            // Correctly set text using randomWords
+            setText(randomWords(mode.wordCount));
+        }
+        else if (mode.duration) {
+            setText(randomWords(10))
+        }
+    }, [mode]);
     return (
         <div className="h-full w-full flex flex-col justify-center">
             <NavBar route={isUser ? "/user" : "/login"} />
-            <section className="flex-1 flex flex-col items-center justify-center">
-                <main className=" w-full px-20 md:px-100">
-        
-                            <Stopwatch ref = {stopwatchRef}/>
-                    {isVisible ?
 
-                        <div className="blur-md flex flex-wrap flex-row justify-center 2">
+            {isVisible ? null : <ModeButtons />}
+            <section className="flex-1 flex flex-col items-center justify-center">
+                <main className=" w-full px-20 md:px-100 text-xl">
+                    {isStopwatch() ? (
+                        <Stopwatch
+                            ref={stopwatchRef}
+
+                            canSee={!isVisible}
+                        />
+
+                    ) : (
+                        <Timer
+                            ref={timerRef}
+                            time={mode.duration}
+
+                            canSee={!isVisible}
+                        />
+                    )}
+                    {isVisible ?
+                        <div className="max-h-50 overflow-y-hidden blur-md flex flex-wrap flex-row justify-center text-3xl ">
                             {/*Passing Both word and wordIndex into Word component*/}
-                            {text.map((word, WordIndex) => <div className=" mx-2"><Word className="" status={status[WordIndex]} word={word}></Word></div>)}
+                            {text.map((word, WordIndex) => <div className="my-2 mx-2"><Word className="" status={status[WordIndex]} word={word}></Word></div>)}
 
                         </div>
 
                         :
 
-                        <div className="flex flex-wrap flex-row justify-center 2">
-                            
-                            {text.map((word, WordIndex) => <div className=" mx-2"><Word className="" status={status[WordIndex]} word={word}></Word></div>)}
+                        <div className="max-h-50 overflow-y-hidden flex flex-wrap flex-row justify-center text-3xl">
+
+                            {text.map((word, WordIndex) => <div className=" mx-2 my-2"><Word className="" status={status[WordIndex]} word={word}></Word></div>)}
 
                         </div>
                     }

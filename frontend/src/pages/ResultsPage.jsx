@@ -5,7 +5,7 @@ import checkIfLoggedIn from "../utils/CheckIfLoggedIn.js"
 import api from "../api.js"
 const ResultsPage = (props) => {
     const [user, setUser] = useState();
-     useEffect(() => {
+    useEffect(() => {
         if (checkIfLoggedIn()) {
             setUser(fetchUser)
         }
