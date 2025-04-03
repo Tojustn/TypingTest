@@ -17,7 +17,7 @@ const HomePage = () => {
     const stopwatchRef = useRef(null)
     const timerRef = useRef(null)
     const [isTimer, setIsTimer] = useState(false)
-    const navigate = useNavigate();
+    const nav = useNavigate();
     const [isVisible, setIsVisible] = useState(true);
     const [userInput, setUserInput] = useState("");
     const [isUser, setIsUser] = useState(false);
@@ -54,16 +54,10 @@ const HomePage = () => {
             }
             return words
         }))
-
         if (state === "correct" && letterIndex === text[wordIndex].length - 1 && wordIndex === text.length - 1) {
-            if (user) {
-                nav("/results", { state: { status: status, text: text } })
-            }
-            else {
-                nav("/results", { state: { status: status, text: text } })
-            }
+            console.log("navigating to results page")
+            nav("/results", { state: { status: status, text: text } })
         }
-
     }
 
 
@@ -118,6 +112,11 @@ const HomePage = () => {
         }
         else if (keyName !== "Shift" && keyName !== "Control" && keyName !== "Alt" && !keyName.includes("Arrow")) {
             setUserInput(prevInput => prevInput + keyName);
+        }
+        else {
+
+            return
+
         }
         // Create shallow copy
         if (keyName != " ") {
@@ -174,7 +173,7 @@ const HomePage = () => {
         }
         setStatus(grid)
 
-    }, [text,mode])
+    }, [text, mode])
     useEffect(() => {
         setText(randomWords(10))
         const CheckUser = async () => {
@@ -227,7 +226,7 @@ const HomePage = () => {
                         />
                     )}
                     {isVisible ?
-                        <div className="max-h-50 overflow-y-hidden blur-md flex flex-wrap flex-row justify-center text-3xl ">
+                        <div className="max-h-50 overflow-y-auto blur-md flex flex-wrap flex-row justify-center text-3xl ">
                             {/*Passing Both word and wordIndex into Word component*/}
                             {text.map((word, WordIndex) => <div className="my-2 mx-2"><Word className="" status={status[WordIndex]} word={word}></Word></div>)}
 
@@ -235,13 +234,13 @@ const HomePage = () => {
 
                         :
 
-                        <div className="max-h-50 overflow-y-hidden flex flex-wrap flex-row justify-center text-3xl">
+                        <div className="max-h-50 overflow-y-auto flex flex-wrap flex-row justify-center text-3xl">
 
-                            {text.map((word, WordIndex) => <div className=" mx-2 my-2"><Word className="" status={status[WordIndex]} word={word}></Word></div>)}
+                            {text.slice(Math.max(0, wordIndex - 9), wordIndex + 9).map((word, displayIndex) => <div className="key={displayIndex +wordIndex} mx-2 my-2 relative"><Word className="" status={status[Math.max(0, wordIndex - 9) + displayIndex]} word={word}></Word></div>)}
 
                         </div>
                     }
-                    <div> {userInput} </div>
+                    <div> {userInput.slice(-1)} </div>
                 </main>
                 {isVisible ? <p className="z-50 opacity-70 absolute">Press Space to Begin Typing</p> : null}
             </section>
