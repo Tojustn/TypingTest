@@ -56,7 +56,15 @@ const HomePage = () => {
         }))
         if (state === "correct" && letterIndex === text[wordIndex].length - 1 && wordIndex === text.length - 1) {
             console.log("navigating to results page")
-            nav("/results", { state: { status: status, text: text } })
+
+            if(mode.wordCount){
+            nav("/results", { state: { wordTable: status, text: text, time: stopwatchRef.current.getTime() } })
+                    
+            }
+            else{
+                nav("/results", {state: {status: status, text:text}})
+
+            }
         }
     }
 

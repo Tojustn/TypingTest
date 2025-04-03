@@ -4,6 +4,7 @@ import fetchUser from "../utils/FetchUser.js"
 import checkIfLoggedIn from "../utils/CheckIfLoggedIn.js"
 import api from "../api.js"
 const ResultsPage = (props) => {
+    const {wordTable, text, time} = props;
     const [user, setUser] = useState();
     useEffect(() => {
         if (checkIfLoggedIn()) {
