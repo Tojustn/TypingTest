@@ -4,15 +4,20 @@ import fetchUser from "../utils/FetchUser.js"
 import checkIfLoggedIn from "../utils/CheckIfLoggedIn.js"
 import api from "../api.js"
 const ResultsPage = (props) => {
-    const {wordTable, text, time} = props;
+    const { wordTable, text, time } = props;
     const [user, setUser] = useState();
     useEffect(() => {
-        if (checkIfLoggedIn()) {
-            setUser(fetchUser)
+        const getUserData = async () => {
+            if (checkIfLoggedIn()) {
+                const userData = await fetchUser()
+                setUser(userData)
+
+            }
         }
+        getUserData()
     }, [])
 
-    return <div><NavBar /></div>
+    return (<NavBar route={user ? "/user" : "/login"} />)
 
 }
 export default ResultsPage;
