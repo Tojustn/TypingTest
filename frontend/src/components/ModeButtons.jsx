@@ -2,7 +2,6 @@
 import { React } from "react"
 import {useMode} from "../utils/Contexts.jsx"
 const ModeButtons = () => {
-
     // Passing in objects from Mode Context
     const {mode, setMode} = useMode();
     const modes = [

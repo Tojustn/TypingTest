@@ -24,7 +24,7 @@ const Stopwatch = (props) => {
     }
 
     const getTime = () => {
-        return Math.floor(seconds)
+        return seconds.toFixed(2)
     }
     useImperativeHandle(props.ref, () => {
         return {

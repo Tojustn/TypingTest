@@ -1,4 +1,3 @@
-import api from "../api.js"
 import { useMode } from "../utils/Contexts.jsx"
 import ModeButtons from "../components/ModeButtons.jsx"
 import isStopwatch from "../utils/isStopwatch.js"
@@ -12,7 +11,7 @@ import checkCookies from "../utils/checkCookies.js"
 import randomWords from "../utils/random-words.js"
 import Word from "../components/Word.jsx"
 const HomePage = () => {
-    
+
     const { mode, setMode } = useMode();
     const stopwatchRef = useRef(null)
     const timerRef = useRef(null)
@@ -32,11 +31,10 @@ const HomePage = () => {
     const createShallowCopy = (state) => {
 
 
-        console.log(`time = ${stopwatchRef.current.getTime()}`)
-
-         let time 
+        console.log(`mode duration ${mode.duration} `)
+        let time
         if (mode.wordCount) {
-           time = stopwatchRef.current.getTime();
+            time = stopwatchRef.current.getTime();
         }
         // save time before stopping stopwatch
         const prevWordIndex = wordIndex - 1;
@@ -63,16 +61,13 @@ const HomePage = () => {
             }
             return words
         }))
-        if (state === "correct" && letterIndex === text[wordIndex].length - 1 && wordIndex === text.length - 1) {
+
+        if (state === "correct" && letterIndex === text[wordIndex].length - 1 && wordIndex === text.length - 1 || (mode.duration && time <= 0)) {
             console.log("navigating to results page")
             console.log(mode.wordCount)
             if (mode.wordCount) {
                 console.log(`Final time ${time}`)
                 nav("/results", { state: { wordTable: status, text: text, time: time } })
-
-            }
-            else {
-                nav("/results", { state: { wordTable: status, text: text, time: mode.duration } })
 
             }
         }
@@ -204,6 +199,14 @@ const HomePage = () => {
 
     }, [])
     useEffect(() => {
+        if (timerRef.current) {
+            const time = timerRef.current.getTime()
+            if (time === 0) {
+                nav("/results", { state: { wordTable: status, text: text, time: mode.duration } })
+            }
+        }
+    }, [mode,timerRef])
+    useEffect(() => {
         setLetterIndex(0)
         setWordIndex(0)
         setUserInput("")
@@ -217,7 +220,7 @@ const HomePage = () => {
             setText(randomWords(mode.wordCount));
         }
         else if (mode.duration) {
-            setText(randomWords(10))
+            setText(randomWords(500))
         }
     }, [mode]);
     return (
