@@ -7,7 +7,7 @@ const textSchema = new mongoose.Schema({
     },
     source: {
         type: String,
-        default: "User-Generated",
+        default: "Short-Quote",
     },
 })
 
