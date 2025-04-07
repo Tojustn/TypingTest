@@ -3,8 +3,8 @@ import User from "../models/user.model.js";
 
 export const submitTest = async (req, res) => {
     try {
-        const {userId, text, time, wrongChar } = req.body;
-        const mins = time/60
+        const { userId, text, time, wrongChar } = req.body;
+        const mins = time / 60
         const numChars = text.length;
         const numWords = text.length;
         const rawWPM = numWords / mins;
@@ -13,9 +13,8 @@ export const submitTest = async (req, res) => {
         let actualWPM = rawWPM - penalty;
         if (actualWPM < 0) actualWPM = 0;
         console.log(`Number of Words ${numWords} \nTime ${mins}`);
-        console.log(userId)
+        console.log(`User Id ${userId}`)
         if (!userId) {
-            console.log("No User")
             return res.status(200).json({
                 accuracy,
                 rawWPM: rawWPM,
@@ -48,37 +47,38 @@ export const submitTest = async (req, res) => {
             user._id,
             { $push: { tests: newTest._id } },
             { new: true }
-        );  
+        );
 
         // Update topWPM if necessary
         if (user.topWPM < actualWPM) {
             await User.updateOne(
-                { _id: userId},
+                { _id: userId },
                 { $set: { topWPM: actualWPM } }
             );
         }
-
-        // Aggregate the sum of all the adjWPMs in the tests
-        const totalAdj = await Test.aggregate([
-            { $match: { user: userId} },
+        const avgAdj = await Test.aggregate([
+            { $match: { user: user._id } },
             {
                 $group: {
                     _id: null,
-                    totalAdjWPM: { $sum: "$adjWPM" }
+                    avgAdjWPM: { $avg: "$adjWPM" }
                 }
             }
         ]);
 
-        const numTests = user.tests.length + 1; // Include the new test
-        let newAvg = 0;
-        if (totalAdj.length > 0 && totalAdj[0].totalAdjWPM !== null) {
-            newAvg = totalAdj.totalAdjWPM[0] / numTests;
+        // Update user's average WPM - extract the value from the aggregation result
+        if (avgAdj.length > 0) {
+            await User.updateOne(
+                { _id: userId },
+                { $set: { avgWPM: avgAdj[0].avgAdjWPM } }
+            );
+            // Update local user object for response
+            user.avgWPM = avgAdj[0].avgAdjWPM;
         }
-
         // Update user's average WPM
         await User.updateOne(
             { _id: userId },
-            { $set: { avgWPM: newAvg } }
+            { $set: { avgWPM: avgAdj[0].avgAdjWPM } }
         );
 
         // Optionally, save the user if any other changes were made

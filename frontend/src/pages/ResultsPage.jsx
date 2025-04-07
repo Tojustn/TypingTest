@@ -42,7 +42,10 @@ const ResultsPage = () => {
                     wrongChar,
                     text,
                 };
-                if (user?._id) payload.userId = user._id;
+                if (user?._id) {
+                    payload.userId = user._id
+                    console.log(user._id)
+                };
 
                 console.log("Submitting payload:", payload); 
                 const result = await api.post("api/test/submitTest", payload);
