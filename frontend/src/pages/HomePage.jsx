@@ -168,7 +168,6 @@ const HomePage = () => {
     }
 
     useEffect(() => {
-        // handleKeyPress needs to be reloaded whenever text is updated because it holds the old text values functions are close-over
         window.addEventListener('keydown', handleKeyPress)
 
         return () => {

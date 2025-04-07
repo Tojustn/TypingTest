@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import NavBar from "../../components/NavBar.jsx";
 import FetchUser from "../../utils/FetchUser.js"
-import api from "../../api.js"
 const UserPage = () => {
     const [user, setUser] = useState();
     const [isLoading, setIsLoading] = useState(true);
@@ -13,7 +12,7 @@ const UserPage = () => {
     useEffect(() => {
         const getUser = async () => {
 
-            const userData = FetchUser();
+            const userData = await FetchUser();
             setUser(userData)
             setIsLoading(false)
         }
@@ -21,12 +20,13 @@ const UserPage = () => {
         getUser();
     }
         , [])
-    const LogOut = async () => {
-        await api.get("api/auth/logout")
-            .then(() => alert("Successful Logout"))
-            .catch((error) => console.log(error));
-        nav("/login")
-    };
+    const LogOut = () => {
+        api.get("api/auth/logout")
+            .catch((error) => console.log(error))
+
+
+
+    }
     if (isLoading) {
         return (
             <div className="justify-center flex flex-col w-full h-full">
@@ -38,48 +38,35 @@ const UserPage = () => {
         );
     }
     return (
-        <div className="flex flex-col w-full h-full">
+        <div className="w-full h-full flex flex-col bg-gray-900 text-gray-100">
             <NavBar route="/user" />
-
-            <main className="flex-1 container mx-auto px-4 py-8 flex justify-center items-center ">
-                <div className="max-w-4xl mx-auto bg-light2 rounded-lg shadow-md w-full">
-                    <div className="bg-dark2 p-6 text-center">
-                        <h1 className="text-star text-5xl font-bold mb-2">
+            <div className="flex-1 flex items-center justify-center p-6">
+                <div className="max-w-3xl w-full">
+                    <section className="text-center flex flex-col">
+                        <h1 className="px-7 py-3 bg-gray-800 border border-blue-900 rounded-lg m-1 w-auto text-blue-400 text-5xl font-bold inline-block mx-auto mb-6">
                             {user.username}
                         </h1>
-                    </div>
 
-                    {/* Stats section */}
-                    <div className="p-6">
-                        <h3 className="text-star text-3xl font-semibold border-b-2 border-dark2 pb-2 mb-4">
-                            Stats
-                        </h3>
+                        <section className="bg-gray-800 rounded-lg shadow-lg border border-blue-900 p-6">
+                            <h3 className="text-blue-400 text-3xl font-bold mb-6 underline">Stats</h3>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                            <div className="bg-gray-100 p-4 rounded-lg text-center">
-                                <p className="text-gray-500">Average WPM</p>
-                                <p className="text-4xl font-bold text-dark2">{user.avgWPM.toFixed(2)}</p>
+                            <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
+                                <div className="bg-gray-900 p-4 rounded-md border border-gray-700 w-full md:w-1/2">
+                                    <div className="text-gray-400 mb-1 text-center">Average WPM</div>
+                                    <div className="text-3xl font-bold text-center text-blue-500">{user.avgWPM}</div>
+                                </div>
+                                <div className="bg-gray-900 p-4 rounded-md border border-gray-700 w-full md:w-1/2">
+                                    <div className="text-gray-400 mb-1 text-center">Top WPM</div>
+                                    <div className="text-3xl font-bold text-center text-blue-500">{user.topWPM}</div>
+                                </div>
                             </div>
-                            <div className="bg-gray-100 p-4 rounded-lg text-center">
-                                <p className="text-gray-500">Top WPM</p>
-                                <p className="text-4xl font-bold text-dark2">{user.topWPM.toFixed(2)}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Action buttons */}
-                    <div className="px-6 pb-6 flex justify-end">
-                        <button
-                            onClick={LogOut}
-                            className="bg-red-500 hover:bg-red-600 text-white py-2 px-6 rounded-md font-medium transition-colors"
-                        >
-                            Log Out
-                        </button>
-                    </div>
+                        </section>
+                    </section>
                 </div>
-            </main>
+            </div>
         </div>
     );
-};
 
-export default UserPage;
+}
+
+export default UserPage

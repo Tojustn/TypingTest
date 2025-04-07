@@ -7,8 +7,7 @@ const testSchema = new mongoose.Schema({
         required: true,
     },
     text:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Text",
+        type: Array,
         required: true,
     },
     // WPM before accuracy considerations
@@ -18,7 +17,7 @@ const testSchema = new mongoose.Schema({
     },
     adjWPM:{
         type: Number, 
-        required: false,
+        required: true,
     },
     accuracy: {
         type: Number,
