@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react"
+import api from "../../api.js"
 import NavBar from "../../components/NavBar.jsx";
 import FetchUser from "../../utils/FetchUser.js"
+import {useNavigate} from "react-router-dom"
+import { LogOutIcon } from "../../assets/icons/LogOut.jsx"
 const UserPage = () => {
+    const nav = useNavigate();
     const [user, setUser] = useState();
     const [isLoading, setIsLoading] = useState(true);
     const testUser = {
@@ -20,10 +24,11 @@ const UserPage = () => {
         getUser();
     }
         , [])
-    const LogOut = () => {
-        api.get("api/auth/logout")
+    const LogOut = async () => {
+        await api.get("api/auth/logout")
             .catch((error) => console.log(error))
 
+        nav("/")
 
 
     }
@@ -53,15 +58,20 @@ const UserPage = () => {
                             <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
                                 <div className="bg-gray-900 p-4 rounded-md border border-gray-700 w-full md:w-1/2">
                                     <div className="text-gray-400 mb-1 text-center">Average WPM</div>
-                                    <div className="text-3xl font-bold text-center text-blue-500">{user.avgWPM}</div>
+                                    <div className="text-3xl font-bold text-center text-blue-500">{user.avgWPM.toFixed(2)}</div>
                                 </div>
                                 <div className="bg-gray-900 p-4 rounded-md border border-gray-700 w-full md:w-1/2">
                                     <div className="text-gray-400 mb-1 text-center">Top WPM</div>
-                                    <div className="text-3xl font-bold text-center text-blue-500">{user.topWPM}</div>
+                                    <div className="text-3xl font-bold text-center text-blue-500">{user.topWPM.toFixed(2)}</div>
                                 </div>
                             </div>
                         </section>
                     </section>
+                    <div className="flex justify-center">
+                        <button className = "opacity-70 hover:opacity-100" onClick = {LogOut}>
+                            <LogOutIcon />
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

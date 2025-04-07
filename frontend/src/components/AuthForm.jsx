@@ -2,19 +2,26 @@ import { useState } from "react";
 import api from "../api.js";
 import { useNavigate } from "react-router-dom"
 const AuthForm = (props) => {
+    const type = props.type;
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("");
     const nav = useNavigate();
     const handleSubmit = async (e) => {
         console.log("Submit Request"); // This should now log
         try {
             e.preventDefault(); // Prevent Page From Reloading
-            const response = await api.post(props.route, { username, password })
-            if (response.status === 200){
+            let response;
+            type === "SignUp" ?
+                response = await api.post(`${props.route}`, { username, email,password })
+                :
+                response = await api.post(`${props.route}`, { username, password })
+            if (response.status === 200) {
                 nav("/")
             }
         } catch (err) {
-            alert("Error occured, try logging in with the correct username and password")        }
+            alert("Error occured, try logging in with the correct username and password")
+        }
     };
 
     return (
@@ -30,6 +37,18 @@ const AuthForm = (props) => {
                     onChange={(e) => setUsername(e.target.value)}
                 />
             </div>
+            {type ==="SignUp" ?
+                <div className="w-full">
+                    <label htmlFor="password" className="block mb-1">Email</label>
+                    <input
+                        id="email"
+                        type="email"
+                        className="w-full p-2 border border-gray-300 rounded"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                </div>
+                : null}
 
             <div className="w-full">
                 <label htmlFor="password" className="block mb-1">Password</label>
@@ -41,9 +60,12 @@ const AuthForm = (props) => {
                     onChange={(e) => setPassword(e.target.value)}
                 />
             </div>
+
+
             <button type="submit" className="w-full my-2 cursor-pointer bg-star rounded py-1">{props.type}</button>
         </form>
     );
 };
 
 export default AuthForm;
+
