@@ -1,8 +1,18 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+# Typing Test Game 🧠⌨️
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+A web-based Typing Test game that allows users to measure and improve their typing speed. The app includes user accounts, stopwatch functionality, and tracks WPM stats.
+
+## Features
+
+✅ **Stopwatch** – Accurately tracks elapsed time during typing sessions  
+✅ **User System** – Each user has their own profile and stats  
+✅ **WPM Tracking** – Tracks Words Per Minute per session  
+✅ **Top WPM** – Displays each user's highest WPM  
+✅ **Average WPM** – Calculates a user's average WPM over all tests
+
+🔧 **Under Development:**
+- ⏲️ Timer Countdown (not yet functional)
+- ✍️ Random Quote Generator (not displaying quotes yet)
+
