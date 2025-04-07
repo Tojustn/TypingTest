@@ -5,10 +5,10 @@ export const submitTest = async (req, res) => {
     try {
         const { userId, text, time, wrongChar } = req.body;
         const mins = time / 60
-        const numChars = text.length;
+       const numChars = text.join(" ").length;
         const numWords = text.length;
         const rawWPM = numWords / mins;
-        const accuracy = ((numChars - wrongChar) / numChars) * 100;
+        const accuracy = (((numChars - wrongChar) / numChars) * 100).toFixed(2);
         const penalty = wrongChar / 5;
         let actualWPM = rawWPM - penalty;
         if (actualWPM < 0) actualWPM = 0;

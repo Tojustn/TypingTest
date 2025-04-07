@@ -225,6 +225,7 @@ const HomePage = () => {
     }, [mode]);
     return (
         <div className="h-full w-full flex flex-col justify-center">
+
             <NavBar route={isUser ? "/user" : "/login"} />
 
             {isVisible ? null : <ModeButtons />}
