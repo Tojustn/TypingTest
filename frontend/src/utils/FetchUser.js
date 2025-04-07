@@ -6,6 +6,7 @@ const fetchUser = async () => {
     const response = await api.get("api/auth/user", { withCredentials: true });
     return response.data;
   } catch (error) {
+      console.log("Error fetching User" + error)
       return null
   }
 };

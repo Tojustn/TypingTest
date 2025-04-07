@@ -23,8 +23,8 @@ const ModeButtons = () => {
         <div className="w-full flex justify-center absolute top-40">
             <div className="rounded-2xl bg-dark2 opacity-80 max-w-3xl px-4 py-2">
                 <section className="flex flex-row justify-center items-center">
-                    {modes.map((modes) => (
-                        <div key={modes.id} onClick={()=>setMode(modes)} className="px-4 hover:text-star">{modes.label}</div>))}
+                    {modes.map((mode) => (
+                        <div key={modes.id} onClick={()=>setMode(mode)} className="px-4 hover:text-star">{mode.label}</div>))}
                 </section>
             </div>
         </div>

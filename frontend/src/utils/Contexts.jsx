@@ -5,7 +5,7 @@ import {useState, createContext,React,useContext} from "react"
 export const ModeContext = createContext();
 
 export const ModeProvider = ({children}) => {   
-    const [mode, setMode] = useState('words-25');
+    const [mode, setMode] = useState( { id: 'words-10', label: '10 Words', wordCount: 10 });
 
     return (
         <ModeContext.Provider value={{setMode, mode}}>

@@ -12,8 +12,8 @@ import checkCookies from "../utils/checkCookies.js"
 import randomWords from "../utils/random-words.js"
 import Word from "../components/Word.jsx"
 const HomePage = () => {
-    const modeContext = useMode();
-    const mode = modeContext.mode
+    
+    const { mode, setMode } = useMode();
     const stopwatchRef = useRef(null)
     const timerRef = useRef(null)
     const [isTimer, setIsTimer] = useState(false)
@@ -30,6 +30,15 @@ const HomePage = () => {
 
     // Finds the current letter and changes the state
     const createShallowCopy = (state) => {
+
+
+        console.log(`time = ${stopwatchRef.current.getTime()}`)
+
+         let time 
+        if (mode.wordCount) {
+           time = stopwatchRef.current.getTime();
+        }
+        // save time before stopping stopwatch
         const prevWordIndex = wordIndex - 1;
         let newWordIndex = wordIndex
         let newLetterIndex = letterIndex
@@ -56,13 +65,14 @@ const HomePage = () => {
         }))
         if (state === "correct" && letterIndex === text[wordIndex].length - 1 && wordIndex === text.length - 1) {
             console.log("navigating to results page")
+            console.log(mode.wordCount)
+            if (mode.wordCount) {
+                console.log(`Final time ${time}`)
+                nav("/results", { state: { wordTable: status, text: text, time: time } })
 
-            if(mode.wordCount){
-            nav("/results", { state: { wordTable: status, text: text, time: stopwatchRef.current.getTime() } })
-                    
             }
-            else{
-                nav("/results", {state: {status: status, text:text}})
+            else {
+                nav("/results", { state: { wordTable: status, text: text, time: mode.duration } })
 
             }
         }

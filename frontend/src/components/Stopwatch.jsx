@@ -10,10 +10,9 @@ const Stopwatch = (props) => {
             }, 10);
         }
         return () => clearInterval(intervalId);
-    }, [isActive]);
+    }, [ isActive]);
 
-    // Don't need useState because its derived from the time useState
-    const seconds = Math.floor((time) / 100);
+    const seconds = (time) / 100;
 
     const StartAndStop = () => {
         setIsActive(!isActive)
@@ -25,7 +24,7 @@ const Stopwatch = (props) => {
     }
 
     const getTime = () => {
-        return time
+        return Math.floor(seconds)
     }
     useImperativeHandle(props.ref, () => {
         return {
@@ -35,7 +34,7 @@ const Stopwatch = (props) => {
             isActive
         }
 
-    }, [])
+    }, [time, isActive])
     return <div className={props.canSee ? "" : "hidden"}>{seconds}</div>
 }
 
